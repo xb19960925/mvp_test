@@ -1,0 +1,4 @@
+rootProject.name='5_28_mvp_test'
+include ':app'
+include ':frame'
+include ':mydata'

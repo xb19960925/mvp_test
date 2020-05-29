@@ -2,6 +2,7 @@ package com.example.frame;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -52,5 +53,11 @@ public class NetManger {
                         pPresenter.error(whichApi, e);
                     }
                 });
+    }
+    public <T, O> void netWorkByConsumer(Observable<T> localTestInfo, final ConnectionPersenter pPresenter, final int whichApi, final int dataType, O... o) {
+        Disposable subscribe = localTestInfo.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pT -> pPresenter.success(whichApi,dataType,pT,o), pThrowable -> pPresenter.error(whichApi,pThrowable));
+        pPresenter.addObserver(subscribe);
     }
 }

@@ -1,11 +1,14 @@
 package com.example.frame;
 
 import java.lang.ref.SoftReference;
+import java.util.List;
+
+import io.reactivex.disposables.Disposable;
 
 public class ConnecPersenter<V extends ConnectionView,M extends ConnectionModel> implements ConnectionPersenter {
     private SoftReference<V> view;
     private  SoftReference<M> connectionModel;
-
+    private List<Disposable> mDisposableList;
 
         public ConnecPersenter(V view,M connectionModel) {
             this.view=new SoftReference<>(view);
@@ -18,6 +21,12 @@ public class ConnecPersenter<V extends ConnectionView,M extends ConnectionModel>
     }
 
     @Override
+    public void addObserver(Disposable pDisposable) {
+        if (mDisposableList == null) return;
+        mDisposableList.add(pDisposable);
+    }
+
+    @Override
     public void success(int whichApi, int loadType, Object... d) {
        if (view!=null&&view.get()!=null)view.get().success(whichApi, loadType, d);
     }
@@ -27,6 +36,9 @@ public class ConnecPersenter<V extends ConnectionView,M extends ConnectionModel>
         if (view!=null&&view.get()!=null)view.get().error(whichApi, pThrowable);
     }
     public void clear(){
+        for (Disposable dis:mDisposableList) {
+            if (dis != null && !dis.isDisposed())dis.dispose();
+        }
         if (view != null){
             view.clear();
             view = null;

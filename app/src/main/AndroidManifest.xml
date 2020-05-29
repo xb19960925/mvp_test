@@ -3,6 +3,7 @@
     package="com.example.a5_28_mvp_test">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:name=".base.Aplication1907"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
